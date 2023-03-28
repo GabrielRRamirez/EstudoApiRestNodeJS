@@ -1,0 +1,27 @@
+
+services:
+  mongodb:
+    image: mongo
+    volumes:
+      - '../db/:/data/db'
+    networks:
+      - api-curso-node
+    ports:
+      - '27018:27017'
+    container_name: 'mongodb'
+
+  nodejs:
+    image: nodecursoapi
+    volumes:
+      - '../:/usr/app/node'
+    ports:
+      - '3000:3000'
+    networks:
+      - api-curso-node
+    depends_on:
+      - mongodb
+    container_name: 'nodejs'
+
+networks:
+   api-curso-node:
+      driver: bridge
