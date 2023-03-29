@@ -10,6 +10,10 @@ class LivroController {
         LivroService.findById(req, res);
     }
 
+    findByTitulo(req, res) {
+        LivroService.findByTitulo(req, res);
+    }
+
     insert(req, res) {
         LivroService.insert(req, res);
     }

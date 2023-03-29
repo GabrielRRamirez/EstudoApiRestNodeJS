@@ -4,7 +4,8 @@ let livroSchema = mongoose.Schema(
     {
         id: {type: String},
         titulo: {type: String, required: true},
-        valor: {type: Number, required: true}
+        valor: {type: Number, required: true},
+        autor: {type: mongoose.Schema.Types.ObjectId, ref:'autor', required: true}
     }
 )
 

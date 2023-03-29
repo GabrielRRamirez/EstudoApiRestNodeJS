@@ -13,7 +13,7 @@ class LivroService {
     async find(_, res) {
 
         try {
-            let livros = await livroModel.find();
+            let livros = await livroModel.find().populate('autor', 'nome').exec();
             res.send(new Response(200, livros).toString());
         } catch (error) {
             res.status(501).send(new Response(501, error).toString()).json();
@@ -26,6 +26,17 @@ class LivroService {
             let livro = await livroModel.findById(id);
             res.send(new Response(200, livro).toString());
         } catch (error) {
+            res.status(501).send(new Response(501, error).toString()).json();
+        }
+    }
+
+    async findByTitulo(req, res) {
+        try {
+            let {titulo} = req.query;
+            let livros = await livroModel.find({'titulo' : titulo});
+            res.status(200).send(new Response(200, livros).toString()).json();
+
+        } catch(error) {
             res.status(501).send(new Response(501, error).toString()).json();
         }
     }
