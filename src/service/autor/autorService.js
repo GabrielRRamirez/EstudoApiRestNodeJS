@@ -1,13 +1,13 @@
-import AutorModel from '../../models/autor/autorModel.js'
-import {Response} from '../../models/response/response.js'
+import AutorModel from "../../models/autor/autorModel.js";
+import {Response} from "../../models/response/response.js";
 
 class AutorService {
 
     validarEstrutura(req) {
         let { nome, nacionalidade } = req.body;
 
-        let nomeValido = (nome !== undefined && nome !== '');
-        let nacionalidadeValida = (nacionalidade !== undefined && nacionalidade !== '');
+        let nomeValido = (nome !== undefined && nome !== "");
+        let nacionalidadeValida = (nacionalidade !== undefined && nacionalidade !== "");
 
         return nomeValido && nacionalidadeValida;
     }
@@ -34,11 +34,11 @@ class AutorService {
     async insert(req, res) {
         try {
             if (!this.validarEstrutura(req)) {
-                res.status(400).send(new Response(400, 'Estrutura inválida!').toString());
+                res.status(400).send(new Response(400, "Estrutura inválida!").toString());
             } else {
                 let autor = new AutorModel(req.body);
                 autor.save();
-                res.status(201).send(new Response(201, 'Inserido com sucesso!').toString());
+                res.status(201).send(new Response(201, "Inserido com sucesso!").toString());
             }
         } catch (error) {
             res.status(500).send(new Response(500, error).toString());
@@ -49,7 +49,7 @@ class AutorService {
         try {
             let { id } = req.params;
             await AutorModel.findByIdAndUpdate(id, { $set: req.body });
-            res.status(200).send(new Response(200, 'Atualizado com sucesso!').toString());
+            res.status(200).send(new Response(200, "Atualizado com sucesso!").toString());
         } catch (error) {
             res.status(500).send(new Response(500, error).toString());
         }
@@ -59,7 +59,7 @@ class AutorService {
         try {
             let { id } = req.params;
             await AutorModel.findByIdAndDelete(id);
-            res.status(200).send(new Response(200, 'Excluído com sucesso!').toString());
+            res.status(200).send(new Response(200, "Excluído com sucesso!").toString());
         } catch (error) {
             res.status(500).send(new Response(500, error).toString());
         }

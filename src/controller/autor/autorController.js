@@ -1,4 +1,4 @@
-import AutorService from '../../service/autor/autorService.js'
+import AutorService from "../../service/autor/autorService.js";
 
 class AutorController {
 
