@@ -10,38 +10,51 @@ class LivroService {
         return (tituloValido && valorValido);
     }
 
-    async find(_, res) {
+    async find(_, res, middleware) {
 
         try {
             let livros = await livroModel.find().populate("autor", "nome").exec();
             res.send(new Response(200, livros).toString());
         } catch (error) {
-            res.status(501).send(new Response(501, error).toString()).json();
+            middleware(error);
         }
     }
 
-    async findById(req, res) {
+    async findById(req, res, middleware) {
         try {
             let { id } = req.params;
             let livro = await livroModel.findById(id);
-            res.send(new Response(200, livro).toString());
+
+            if (!livro) {
+                res.status(404).send(new Response(404, "Nenhum registro encontrado!").toString());
+            } else {
+                res.send(new Response(200, livro).toString());
+            }
+
         } catch (error) {
-            res.status(501).send(new Response(501, error).toString()).json();
+            middleware(error);
         }
     }
 
-    async findByTitulo(req, res) {
+    async findByTitulo(req, res, middleware) {
         try {
-            let {titulo} = req.query;
-            let livros = await livroModel.find({"titulo" : titulo});
-            res.status(200).send(new Response(200, livros).toString()).json();
+            let { titulo } = req.query;
+            let livros = await livroModel.find({ "titulo": titulo });
 
-        } catch(error) {
-            res.status(501).send(new Response(501, error).toString()).json();
+            console.log(`livros ${livros}`);
+
+            if (!livros || livros == "") {
+                res.status(404).send(new Response(404, "Nenhum registro encontrado!").toString());
+            } else {
+                res.status(200).send(new Response(200, livros).toString()).json();
+            }
+
+        } catch (error) {
+            middleware(error);
         }
     }
 
-    async insert(req, res) {
+    async insert(req, res, middleware) {
         try {
 
             if (!this.validarEstrutura(req)) {
@@ -53,27 +66,27 @@ class LivroService {
             }
 
         } catch (error) {
-            res.status(500).send(new Response(500, error).toString()).json();
+            middleware(error);
         }
     }
 
-    async update(req, res) {
+    async update(req, res, middleware) {
         try {
-            let {id} = req.params;
-            await livroModel.findByIdAndUpdate(id, {$set: req.body});
+            let { id } = req.params;
+            await livroModel.findByIdAndUpdate(id, { $set: req.body });
             res.status(200).send(new Response(200, "Atualizado com sucesso!").toString());
         } catch (error) {
-            res.status(500).send(new Response(500, error).toString()).json();
+            middleware(error);
         }
     }
 
-    async destroy(req, res) {
+    async destroy(req, res, middleware) {
         try {
-            let {id} = req.params;
+            let { id } = req.params;
             await livroModel.findByIdAndDelete(id);
             res.status(200).send(new Response(200, "Excluido com sucesso!").toString());
         } catch (error) {
-            res.status(500).send(new Response(500, error).toString()).json();
+            middleware(error);
         }
     }
 }
