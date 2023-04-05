@@ -23,7 +23,10 @@ export class Response {
         this.#mensagem = mensagem;
     }
 
-    toString() {
-        return `{"statuscode":${this.#statusCode}, "mensagem": "${this.#mensagem}"}`;
+    enviarResposta(res) {
+        res.status(this.#statusCode).send({
+            status: this.#statusCode,
+            message: this.#mensagem
+        });
     }
 }

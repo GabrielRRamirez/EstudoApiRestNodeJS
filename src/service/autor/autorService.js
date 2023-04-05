@@ -1,21 +1,13 @@
+import RecursoNaoEncontradoError from "../../errors/RecursoNaoEncontradoError.js";
 import AutorModel from "../../models/autor/autorModel.js";
 import { Response } from "../../models/response/response.js";
 
 class AutorService {
 
-    validarEstrutura(req) {
-        let { nome, nacionalidade } = req.body;
-
-        let nomeValido = (nome !== undefined && nome !== "");
-        let nacionalidadeValida = (nacionalidade !== undefined && nacionalidade !== "");
-
-        return nomeValido && nacionalidadeValida;
-    }
-
     async find(_, res, middleware) {
         try {
             let autores = await AutorModel.find();
-            res.status(200).send(new Response(200, autores).toString());
+            new Response(200, autores).enviarResposta(res);
         } catch (error) {
             middleware(error);
         }
@@ -27,9 +19,9 @@ class AutorService {
             let autor = await AutorModel.findById(id);
 
             if (!autor) {
-                res.status(404).send(new Response(404, "Autor não encontrado!").toString()).json();
+                middleware(new RecursoNaoEncontradoError("Autor não encontrado!"));
             } else {
-                res.status(200).send(new Response(200, autor).toString());
+                new Response(200, autor).enviarResposta(res);
             }
 
         } catch (error) {
@@ -39,13 +31,10 @@ class AutorService {
 
     async insert(req, res, middleware) {
         try {
-            if (!this.validarEstrutura(req)) {
-                res.status(400).send(new Response(400, "Estrutura inválida!").toString());
-            } else {
-                let autor = new AutorModel(req.body);
-                autor.save();
-                res.status(201).send(new Response(201, "Inserido com sucesso!").toString());
-            }
+            let autor = new AutorModel(req.body);
+            autor.save();
+            new Response(201, "Inserido com sucesso!").enviarResposta(res);
+
         } catch (error) {
             middleware(error);
         }
@@ -55,7 +44,7 @@ class AutorService {
         try {
             let { id } = req.params;
             await AutorModel.findByIdAndUpdate(id, { $set: req.body });
-            res.status(200).send(new Response(200, "Atualizado com sucesso!").toString());
+            new Response(200, "Atualizado com sucesso!").enviarResposta(res);
         } catch (error) {
             middleware(error);
         }
@@ -65,7 +54,7 @@ class AutorService {
         try {
             let { id } = req.params;
             await AutorModel.findByIdAndDelete(id);
-            res.status(200).send(new Response(200, "Excluído com sucesso!").toString());
+            new Response(200, "Excluído com sucesso!").enviarResposta(res);
         } catch (error) {
             middleware(error);
         }
