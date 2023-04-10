@@ -1,5 +1,5 @@
 import { Response } from "../../models/response/response.js";
-import livroModel from "../../models/livro/LivroModel.js";
+import livroModel from "../../models/livro/livroModel.js";
 import RecursoNaoEncontradoError from "../../errors/RecursoNaoEncontradoError.js";
 
 class LivroService {
@@ -33,7 +33,7 @@ class LivroService {
     async findByTitulo(req, res, middleware) {
         try {
             let { titulo } = req.query;
-            let livros = await livroModel.find({ "titulo": titulo });
+            let livros = await livroModel.find({ titulo: new RegExp(titulo, "i")});
 
             console.log(`livros ${livros}`);
 
