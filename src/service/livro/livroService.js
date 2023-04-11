@@ -4,11 +4,11 @@ import RecursoNaoEncontradoError from "../../errors/RecursoNaoEncontradoError.js
 
 class LivroService {
 
-    async find(_, res, middleware) {
+    async find(req, res, middleware) {
 
         try {
-            let livros = await livroModel.find().populate("autor", "nome").exec();
-            new Response(200, livros).enviarResposta(res);
+            req.result = livroModel.find().populate("autor", ["nome", "nacionalidade"]);
+            middleware();
         } catch (error) {
             middleware(error);
         }
